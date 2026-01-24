@@ -1,4 +1,4 @@
-﻿public class PriorityQueue
+﻿public class PriorityQueue<T>
 {
     private List<PriorityItem> _queue = new();
 
@@ -9,29 +9,34 @@
     /// </summary>
     /// <param name="value">The value</param>
     /// <param name="priority">The priority</param>
-    public void Enqueue(string value, int priority)
+    public void Enqueue(T value, int priority)
     {
         var newNode = new PriorityItem(value, priority);
-        _queue.Add(newNode);
+        _queue.Add(newNode); // Always add to the back
     }
 
-    public string Dequeue()
+    public T Dequeue()
     {
         if (_queue.Count == 0) // Verify the queue is not empty
         {
             throw new InvalidOperationException("The queue is empty.");
         }
 
-        // Find the index of the item with the highest priority to remove
-        var highPriorityIndex = 0;
-        for (int index = 1; index < _queue.Count - 1; index++)
+        // Find the index of the item with the highest priority
+        // If multiple items have the same priority, remove the first one (FIFO)
+        int highPriorityIndex = 0;
+        for (int index = 1; index < _queue.Count; index++) // fixed loop condition
         {
-            if (_queue[index].Priority >= _queue[highPriorityIndex].Priority)
+            if (_queue[index].Priority > _queue[highPriorityIndex].Priority)
+            {
                 highPriorityIndex = index;
+            }
+            // Do not change highPriorityIndex if equal; preserves FIFO
         }
 
         // Remove and return the item with the highest priority
         var value = _queue[highPriorityIndex].Value;
+        _queue.RemoveAt(highPriorityIndex); // Actually remove the item from the queue
         return value;
     }
 
@@ -41,23 +46,24 @@
     {
         return $"[{string.Join(", ", _queue)}]";
     }
-}
 
-internal class PriorityItem
-{
-    internal string Value { get; set; }
-    internal int Priority { get; set; }
-
-    internal PriorityItem(string value, int priority)
+    // Internal class representing each queue item
+    internal class PriorityItem
     {
-        Value = value;
-        Priority = priority;
-    }
+        internal T Value { get; set; }
+        internal int Priority { get; set; }
 
-    // DO NOT MODIFY THE CODE IN THIS METHOD
-    // The graders rely on this method to check if you fixed all the bugs, so changes to it will cause you to lose points.
-    public override string ToString()
-    {
-        return $"{Value} (Pri:{Priority})";
+        internal PriorityItem(T value, int priority)
+        {
+            Value = value;
+            Priority = priority;
+        }
+
+        // DO NOT MODIFY THE CODE IN THIS METHOD
+        // The graders rely on this method to check if you fixed all the bugs, so changes to it will cause you to lose points.
+        public override string ToString()
+        {
+            return $"{Value} (Pri:{Priority})";
+        }
     }
 }

@@ -37,21 +37,31 @@ public class TakingTurnsQueue
         {
             throw new InvalidOperationException("No one in the queue.");
         }
-        else
-        {
-            Person person = _people.Dequeue();
-            if (person.Turns > 1)
-            {
-                person.Turns -= 1;
-                _people.Enqueue(person);
-            }
 
+        Person person = _people.Dequeue();
+
+        if (person.Turns <= 0)
+        {
+            _people.Enqueue(person);
             return person;
         }
+
+        person.Turns--;
+
+        if (person.Turns > 0)
+        {
+            _people.Enqueue(person);
+        }
+
+        return person;
     }
 
+    /// <summary>
+    /// Safe string representation of the queue.
+    /// This will not cause recursion and is only used for debugging.
+    /// </summary>
     public override string ToString()
     {
-        return _people.ToString();
+        return $"TakingTurnsQueue (Length = {Length})";
     }
 }
