@@ -1,3 +1,6 @@
+using System;
+using System.Collections.Generic;
+
 /// <summary>
 /// Defines a maze using a dictionary. The dictionary is provided by the
 /// user when the Maze object is created. The dictionary will contain the
@@ -32,7 +35,10 @@ public class Maze
     /// </summary>
     public void MoveLeft()
     {
-        // FILL IN CODE
+        // Check current cell for left movement
+        if (!_mazeMap.TryGetValue((_currX, _currY), out var moves) || moves[0] == false)
+            throw new InvalidOperationException("Can't go that way!");
+        _currX--;
     }
 
     /// <summary>
@@ -41,7 +47,10 @@ public class Maze
     /// </summary>
     public void MoveRight()
     {
-        // FILL IN CODE
+        // Check current cell for right movement
+        if (!_mazeMap.TryGetValue((_currX, _currY), out var moves) || moves[1] == false)
+            throw new InvalidOperationException("Can't go that way!");
+        _currX++;
     }
 
     /// <summary>
@@ -50,7 +59,10 @@ public class Maze
     /// </summary>
     public void MoveUp()
     {
-        // FILL IN CODE
+        // Check current cell for up movement
+        if (!_mazeMap.TryGetValue((_currX, _currY), out var moves) || moves[2] == false)
+            throw new InvalidOperationException("Can't go that way!");
+        _currY++;
     }
 
     /// <summary>
@@ -59,9 +71,15 @@ public class Maze
     /// </summary>
     public void MoveDown()
     {
-        // FILL IN CODE
+        // Check current cell for down movement
+        if (!_mazeMap.TryGetValue((_currX, _currY), out var moves) || moves[3] == false)
+            throw new InvalidOperationException("Can't go that way!");
+        _currY--;
     }
 
+    /// <summary>
+    /// Returns the current location of the player in the maze
+    /// </summary>
     public string GetStatus()
     {
         return $"Current location (x={_currX}, y={_currY})";
